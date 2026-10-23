@@ -19,8 +19,8 @@ $$\mathrm{MAE} = \frac{1}{n}\sum_{i=1}^{n} |y_i - \hat y_i|$$
 
 | Модель                    | MAE на валидации, мин |
 |---------------------------|-----------------------|
-| Константа (общая медиана) | X.XX                  |
-| Медиана по паре зон       | X.XX                  |
+| Константа (общая медиана) | 8.46                  |
+| Медиана по паре зон       | 4.41                  |
 
 Размер выборок: train - N поездок, val - N поездок.
 
@@ -38,7 +38,7 @@ $$\mathrm{MAE} = \frac{1}{n}\sum_{i=1}^{n} |y_i - \hat y_i|$$
 Нужны Python 3.12 и Docker.
 
 ```bash
-git clone <ссылка на репозиторий>
+git clone https://github.com/purringcoal/taxi-eta.git
 cd taxi-eta
 python -m venv .venv
 source .venv/bin/activate          # Windows: .venv\Scripts\activate
@@ -64,7 +64,7 @@ curl -X POST http://127.0.0.1:8000/predict \
 Ответ:
 
 ```json
-{"duration_min": X.X}
+{"duration_min": 51.1}
 ```
 
 Документация API (Swagger): http://127.0.0.1:8000/docs
