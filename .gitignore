@@ -2,3 +2,6 @@
 __pycache__/
 data/
 models/
+mlruns/
+mlartifacts/
+mlflow.db

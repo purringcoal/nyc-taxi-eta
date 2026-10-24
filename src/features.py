@@ -32,3 +32,8 @@ def load_month(month: str) -> pd.DataFrame:
     df = df.assign(**{TARGET: dur})
     df = df[df[TARGET].between(1, 120)]
     return add_time_features(df, "tpep_pickup_datetime")
+
+
+def make_model_input(df: pd.DataFrame) -> pd.DataFrame:
+    """Вход модели: только признаки, в фиксированном порядке, все int64."""
+    return df[FEATURES].astype("int64")
