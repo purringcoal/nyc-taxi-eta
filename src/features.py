@@ -4,6 +4,8 @@ import pandas as pd
 RAW_DIR = Path("data/raw")
 TARGET = "duration_min"
 PAIR = ["PULocationID", "DOLocationID"]
+FEATURES = ["PULocationID", "DOLocationID", "pickup_hour", "pickup_dow"]
+CAT_FEATURES = ["PULocationID", "DOLocationID"]
 
 def add_time_features(df: pd.DataFrame, time_col: str) -> pd.DataFrame:
     """Одна и та же функция для обучения и для API."""

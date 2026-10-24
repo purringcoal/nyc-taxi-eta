@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field
 
 from src.features import add_time_features
 
-model = joblib.load(Path("models/baseline.joblib"))
+model = joblib.load(Path("models/lgbm.joblib"))
 
 app = FastAPI(title="Taxi ETA")
 

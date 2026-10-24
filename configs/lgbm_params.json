@@ -1,0 +1,11 @@
+{
+  "params": {
+    "learning_rate": 0.034075753238074234,
+    "num_leaves": 379,
+    "min_child_samples": 138,
+    "reg_lambda": 0.8742184455736219,
+    "cat_smooth": 5.980602002599538
+  },
+  "valid_mae": 3.465192913800834,
+  "n_trees_on_sample": 1511
+}
