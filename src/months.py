@@ -42,3 +42,13 @@ def parse_month_range_args(description: str) -> list[str]:
     if end < args.start:
         parser.error(f"последний месяц {end} раньше первого {args.start}")
     return month_range(args.start, end)
+
+
+def months_before(month: str, n: int) -> list[str]:
+    """n месяцев, которые идут перед month, без него самого.
+
+    Например, months_before('2025-05', 3) возвращает ['2025-02', '2025-03', '2025-04'].
+    """
+    end = pd.Period(month, freq="M") - 1
+    start = end - (n - 1)
+    return month_range(start.strftime("%Y-%m"), end.strftime("%Y-%m"))

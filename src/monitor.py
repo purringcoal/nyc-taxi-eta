@@ -15,7 +15,7 @@ from mlflow import MlflowClient
 
 from src.cbd_zones import load_cbd_zones
 from src.drift import psi_categorical, psi_continuous
-from src.features import FEATURES, TARGET, load_month, make_model_input
+from src.features import FEATURES, TARGET, load_month, load_sample, make_model_input
 from src.months import parse_month_range_args
 from src.validation import validate_month
 
@@ -30,6 +30,9 @@ FEE_START_MONTH = "2025-01"  # месяц введения платы за въ�
 SAMPLE_SIZE = 100_000
 REFERENCE_SAMPLE_SIZE = 200_000
 SEED = 42
+# Месяц года меняется от месяца к месяцу по определению, и PSI по нему всегда огромный.
+# Поэтому дрейф считаем только по остальным признакам.
+DRIFT_FEATURES = [col for col in FEATURES if col != "pickup_month"]
 
 
 def log(message: str) -> None:
@@ -82,7 +85,7 @@ def compute_metrics(df: pd.DataFrame, pred: np.ndarray, reference: pd.DataFrame,
     }
     metrics["bias_gap"] = metrics["bias_cbd"] - metrics["bias_outside"]
 
-    for col in FEATURES:
+    for col in DRIFT_FEATURES:
         metrics[f"psi_{col}"] = psi_categorical(reference[col], df[col])
     metrics["psi_duration"] = psi_continuous(reference[TARGET], df[TARGET])
     metrics["psi_prediction"] = psi_continuous(reference_pred, pred)
@@ -104,7 +107,7 @@ def plot_monitoring(table: pd.DataFrame, path: Path) -> Path:
         ("Медиана остатков в зоне платы минус вне её, мин",
          [("bias_gap", None)]),
         ("PSI признаков относительно обучающих данных",
-         [(f"psi_{col}", col) for col in FEATURES]),
+         [(f"psi_{col}", col) for col in DRIFT_FEATURES]),
         ("PSI длительности и предсказаний",
          [("psi_duration", "фактическая длительность"), ("psi_prediction", "предсказание")]),
     ]
@@ -159,8 +162,8 @@ def main():
 
     # Эталон для дрейфа это данные, на которых модель обучалась.
     log(f"Читаю эталонные месяцы {', '.join(train_months)}")
-    reference = pd.concat([load_month(m) for m in train_months], ignore_index=True)
-    reference = sample(reference, REFERENCE_SAMPLE_SIZE)
+        # Подвыборка берётся из каждого месяца отдельно, чтобы не держать в памяти все месяцы целиком.
+    reference = load_sample(train_months, REFERENCE_SAMPLE_SIZE // len(train_months), seed=SEED)
     log(f"Делаю предсказания для эталона ({len(reference):,} поездок)")
     started = time.perf_counter()
     reference_pred = model.predict(make_model_input(reference))
