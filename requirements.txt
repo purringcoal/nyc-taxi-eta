@@ -7,3 +7,4 @@ uvicorn==0.54.0
 lightgbm==4.7.0
 optuna==5.0.0
 mlflow==3.17.2
+matplotlib==3.11.2

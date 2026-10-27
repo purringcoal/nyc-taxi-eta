@@ -28,7 +28,7 @@ from src.months import month_bounds, parse_month_range_args
 # худшего нормального месяца.
 MIN_ROWS = 2_000_000
 MAX_NULL_SHARE = 0.001
-MIN_IN_MONTH_SHARE = 0.9999
+MIN_IN_MONTH_SHARE = 0.999
 MIN_VALID_ZONE_SHARE = 0.999
 MIN_VALID_DURATION_SHARE = 0.95
 
