@@ -1,6 +1,22 @@
 [project]
 name = "taxi-eta"
 version = "0.1.0"
+requires-python = ">=3.12"
 
 [tool.setuptools.packages.find]
 include = ["src*"]
+
+[tool.pytest.ini_options]
+# Корень проекта добавляется в путь поиска модулей, чтобы в тестах работал import src.
+pythonpath = ["."]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 120
+# Папки с данными и служебными файлами MLflow не проверяются.
+extend-exclude = ["data", "mlruns", "mlartifacts", "notebooks"]
+
+[tool.ruff.lint]
+# Набор правил задан явно, чтобы проверка не менялась при обновлении ruff.
+# E и F это ошибки стиля и явные ошибки в коде, I это порядок импортов.
+select = ["E", "F", "I"]
