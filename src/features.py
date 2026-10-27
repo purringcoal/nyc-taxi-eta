@@ -8,7 +8,7 @@ RAW_DIR = Path("data/raw")
 
 TARGET = "duration_min"
 PAIR = ["PULocationID", "DOLocationID"]
-FEATURES = ["PULocationID", "DOLocationID", "pickup_hour", "pickup_dow"]
+FEATURES = ["PULocationID", "DOLocationID", "pickup_hour", "pickup_dow", "pickup_month"]
 CAT_FEATURES = ["PULocationID", "DOLocationID"]
 
 # Колонки, которые мы читаем из исходного файла. Остальные нам не нужны.
@@ -40,6 +40,7 @@ def add_time_features(df: pd.DataFrame, time_col: str) -> pd.DataFrame:
     t = pd.to_datetime(df[time_col])
     df["pickup_hour"] = t.dt.hour
     df["pickup_dow"] = t.dt.dayofweek  # 0 соответствует понедельнику
+    df["pickup_month"] = t.dt.month
     return df
 
 
@@ -71,6 +72,18 @@ def clean_month(df: pd.DataFrame, month: str) -> pd.DataFrame:
 def load_month(month: str) -> pd.DataFrame:
     """Читает и очищает месяц. Это основная функция для обучения."""
     return clean_month(read_raw_month(month), month)
+
+def load_sample(months: list[str], n_per_month: int, seed: int = 42) -> pd.DataFrame:
+    """Случайная подвыборка из нескольких месяцев, поровну из каждого.
+
+    Поровну, чтобы каждый сезон был представлен одинаково, даже если
+    в каких-то месяцах поездок больше.
+    """
+    parts = []
+    for month in months:
+        df = load_month(month)
+        parts.append(df.sample(n=min(n_per_month, len(df)), random_state=seed))
+    return pd.concat(parts, ignore_index=True) 
 
 
 def make_model_input(df: pd.DataFrame) -> pd.DataFrame:
