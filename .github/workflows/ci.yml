@@ -1,0 +1,32 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      # Если тесты упадут на одной версии Python, вторую всё равно доводим до конца,
+      # чтобы сразу было видно, на какой версии проблема.
+      fail-fast: false
+      matrix:
+        python-version: ["3.12", "3.14"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Установка зависимостей
+        run: pip install -r requirements.txt
+
+      - name: Линтер
+        run: ruff check src tests
+
+      - name: Тесты
+        run: pytest

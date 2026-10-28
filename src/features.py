@@ -39,7 +39,7 @@ def add_time_features(df: pd.DataFrame, time_col: str) -> pd.DataFrame:
     df = df.copy()
     t = pd.to_datetime(df[time_col])
     df["pickup_hour"] = t.dt.hour
-    df["pickup_dow"] = t.dt.dayofweek  # 0 соответствует понедельнику
+    df["pickup_dow"] = t.dt.day_of_week  # 0 соответствует понедельнику
     df["pickup_month"] = t.dt.month
     return df
 
